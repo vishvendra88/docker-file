@@ -1,0 +1,235 @@
+# docker-file
+docker commands
+Unit01:
+
+
+ContanerRuntime: 
+
+1) dockerd
+
+2) containerd
+
+3) Cri-o
+
+
+Unit-2:
+
+Lab Setup & Installation
+
+
+1) cloud Based
+2) local laptop
+
+2Gb
+
+OS: Linux/centos-7/ubuntu
+
+
+docker-ce: 
+
+docker-ee:
+
+
+Lab1: Local Laptop:
+
+
+1) vmware workstation:
+
+2) ISO
+
+
+
+
+
+yum  : 
+
+
+
+AWS cloud
+
+
+1) Account sing
+
+
+
+Password based
+
+Key based
+
+      public 
+
+      private 
+
+
+
+Unit03: 
+
+Basic Commands about Images
+
+Image: 
+
+
+[root@dockercloud ~]# docker pull  docker.io/mysql:5.6
+5.6: Pulling from library/mysql
+35b2232c987e: Pull complete
+fc55c00e48f2: Pull complete
+0030405130e3: Pull complete
+e1fef7f6a8d1: Pull complete
+1c76272398bb: Pull complete
+f57e698171b6: Pull complete
+f5b825b269c0: Pull complete
+dcb0af686073: Pull complete
+27bbfeb886d1: Pull complete
+6f70cc868145: Pull complete
+1f6637f4600d: Pull complete
+Digest: sha256:20575ecebe6216036d25dab5903808211f1e9ba63dc7825ac20cb975e34cfcae
+Status: Downloaded newer image for mysql:5.6
+docker.io/library/mysql:5.6
+[root@dockercloud ~]#
+[root@dockercloud ~]# docker images
+REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
+nginx        latest    76c69feac34e   2 weeks ago     142MB
+mysql        5.6       dd3b2a5dcb48   10 months ago   303MB
+nginx        1.16      dfcfd8e9a5d3   2 years ago     127MB
+[root@dockercloud ~]#
+[root@dockercloud ~]# docker system df
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          3         0         571MB     571MB (100%)
+Containers      0         0         0B        0B
+Local Volumes   0         0         0B        0B
+Build Cache     0         0         0B        0B
+[root@dockercloud ~]# clear
+[root@dockercloud ~]#
+[root@dockercloud ~]#
+[root@dockercloud ~]# docker search  registry.access.redhat.com/httpd
+NAME                                               DESCRIPTION                                     STARS     AUTOMATED
+rhscl/httpd-24-rhel7                               Apache HTTP 2.4 Server                          0       
+ubi8/httpd-24                                      Platform for running Apache httpd 2.4 or bui…   0       
+cloudforms46-beta/cfme-openshift-httpd             CloudForms is a management and automation pl…   0       
+cloudforms46/cfme-openshift-httpd                  Web Server image for a multi-pod Red Hat® Cl…   0       
+rhmap43/httpd                                      Provides an extension to the RHSCL Httpd Doc…   0       
+rhmap47/httpd                                      Provides an extension to the RHSCL Httpd ima…   0       
+ubi9/httpd-24                                      rhcc_registry.access.redhat.com_ubi9/httpd-24   0       
+rhmap45/httpd                                      Provides an extension to the RHSCL Httpd ima…   0       
+rhscl/varnish-4-rhel7                              Varnish 4 high-performance HTTP accelerator     0       
+rhmap44/httpd                                      Provides an extension to the RHSCL Httpd Doc…   0       
+rhmap42/httpd                                      Provides an extension to the RHSCL Httpd Doc…   0       
+rhmap46/httpd                                      Provides an extension to the RHSCL Httpd ima…   0       
+cloudforms47/cfme-openshift-httpd                  CloudForms 4.7 APP image for OpenShift          0       
+openshift3/ose-egress-http-proxy                   This is the egress router HTTP proxy for Ope…   0       
+rhscl/varnish-5-rhel7                              Varnish available as container is a base pla…   0       
+rhscl/varnish-6-rhel7                              Varnish available as container is a base pla…   0       
+openshift3/prometheus-alert-buffer                 A small server that saves incoming webhook J…   0       
+openshift3/ose-f5-router                           The F5 router plug-in integrates with an exi…   0       
+openshift3/ose-haproxy-router                      Default router implementation for OpenShift …   0       
+cloudforms46/cfme-httpd-configmap-generator        External Authentication configuration mappin…   0       
+cloudforms47/cfme-httpd-configmap-generator        CloudForms 4.7 APP image for OpenShift          0       
+cloudforms46-beta/cfme-httpd-configmap-generator   CloudForms is a management and automation pl…   0       
+rhscl/s2i-core-rhel7                               The s2i core container image serves as a bas…   0       
+rhscl/nginx-112-rhel7                              Nginx is a web server and a reverse proxy se…   0       
+cloudforms46/cfme-openshift-app                    Red Hat® CloudForms Appliance image to be us…   0       
+3scale-amp22/backend                               3scale is an API Management Platform suitabl…   0       
+rhscl/nginx-114-rhel7                              Nginx is a web server and a reverse proxy se…   0       
+[root@dockercloud ~]#
+[root@dockercloud ~]# docker  pull  registry.access.redhat.com/rhscl/httpd-24-rhel7
+Using default tag: latest
+latest: Pulling from rhscl/httpd-24-rhel7
+765083362158: Pull complete
+aa04dc0811c3: Pull complete
+8846194f5a98: Pull complete
+Digest: sha256:e892cda20cda26f6a332fac29b96b5f7da176870e9c423118c3dc31b4abc5fc1
+Status: Downloaded newer image for registry.access.redhat.com/rhscl/httpd-24-rhel7:latest
+registry.access.redhat.com/rhscl/httpd-24-rhel7:latest
+[root@dockercloud ~]#
+[root@dockercloud ~]#
+[root@dockercloud ~]# docker  images
+REPOSITORY                                        TAG       IMAGE ID       CREATED         SIZE
+registry.access.redhat.com/rhscl/httpd-24-rhel7   latest    c19a96fc0b01   8 days ago      317MB
+nginx                                             latest    76c69feac34e   2 weeks ago     142MB
+mysql                                             5.6       dd3b2a5dcb48   10 months ago   303MB
+nginx                                             1.16      dfcfd8e9a5d3   2 years ago     127MB
+[root@dockercloud ~]#
+[root@dockercloud ~]# docker  pull  docker.io/ramprkashupadhyay123/ex288
+Using default tag: latest
+Error response from daemon: pull access denied for ramprkashupadhyay123/ex288, repository does not exist ore 'docker login': denied: requested access to the resource is denied
+[root@dockercloud ~]#
+[root@dockercloud ~]# docker  login docker.io
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over/hub.docker.com to create one.
+Username: ramprakashupadhyay123
+Password:
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+[root@dockercloud ~]# docker  pull  docker.io/ramprkashupadhyay123/ex288
+Using default tag: latest
+Error response from daemon: pull access denied for ramprkashupadhyay123/ex288, reposi                      tory does not exist or may require 'docker login': denied: requested access to the re                      source is denied
+[root@dockercloud ~]# docker  pull  docker.io/ramprakashupadhyay123/ex288
+Using default tag: latest
+latest: Pulling from ramprakashupadhyay123/ex288
+3be8687e54a9: Pull complete
+2268ee6d0e5a: Pull complete
+44368d8124cb: Pull complete
+cc326b0b9d4d: Pull complete
+691a8d1ddde6: Pull complete
+acb64a47b873: Pull complete
+Digest: sha256:536d8197cb0b75b2979b2a7ad9c8f2e83bde23f8d941d21b6161f10170c608c3
+Status: Downloaded newer image for ramprakashupadhyay123/ex288:latest
+docker.io/ramprakashupadhyay123/ex288:latest
+[root@dockercloud ~]#
+[root@dockercloud ~]# docker  images
+REPOSITORY                                        TAG       IMAGE ID       CREATED                               SIZE
+registry.access.redhat.com/rhscl/httpd-24-rhel7   latest    c19a96fc0b01   8 days ago                            317MB
+nginx                                             latest    76c69feac34e   2 weeks ag                      o     142MB
+ramprakashupadhyay123/ex288                       latest    9fff04eab99f   10 months                       ago   774MB
+mysql                                             5.6       dd3b2a5dcb48   10 months                       ago   303MB
+nginx                                             1.16      dfcfd8e9a5d3   2 years ag                      o     127MB
+[root@dockercloud ~]# l
+bash: l: command not found
+[root@dockercloud ~]#
+[root@dockercloud ~]# docker  images
+[root@dockercloud ~]# docker  images
+REPOSITORY                                        TAG       IMAGE ID       CREATED         SIZE
+registry.access.redhat.com/rhscl/httpd-24-rhel7   latest    c19a96fc0b01   8 days ago      317MB
+nginx                                             latest    76c69feac34e   2 weeks ago     142MB
+ramprakashupadhyay123/ex288                       latest    9fff04eab99f   10 months ago   774MB
+mysql                                             5.6       dd3b2a5dcb48   10 months ago   303MB
+nginx                                             1.16      dfcfd8e9a5d3   2 years ago     127MB
+[root@dockercloud ~]#
+[root@dockercloud ~]#
+
+
+
+
+ 1  vi /etc/ssh/sshd_config
+    2  systemctl  restart  sshd
+    3  passwd   centos
+    4  clear
+    5  docker  images
+    6  docker pull nginx
+    7  docker pull docker.io/nginx
+    8  docker images
+    9  docker pull docker.io/nginx:1.16
+   10  docker images
+   11  df -TH   /
+   12  ls -ld /var/lib/docker/
+   13  ls  /var/lib/docker/
+   14  docker  info  |  grep -i root
+   15  docker  search  docker.io/mysql
+   16  docker pull  docker.io/mysql:5.6
+   17  docker images
+   18  docker system df
+   19  clear
+   20  docker search  registry.access.redhat.com/httpd
+   21  docker  pull  registry.access.redhat.com/rhscl/httpd-24-rhel7
+   22  docker  images
+   23  docker  pull  docker.io/ramprkashupadhyay123/ex288
+   24  docker  login docker.io
+   25  docker  pull  docker.io/ramprkashupadhyay123/ex288
+   26  docker  pull  docker.io/ramprakashupadhyay123/ex288
+   27  docker  images
+   28  l
+   29  docker  images
+
+

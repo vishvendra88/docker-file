@@ -1,0 +1,732 @@
+Docker Image Build process  ? 
+
+
+
+1) Manually 
+
+
+    step-1:  Raw Images.
+
+    step-2: deploy  image inside container
+
+    step-3: Install software libs inside container .
+
+    step-4: then we will commit container changes . then it make  new image with software changes.
+
+    step-5: now we can launch new container using  new Image.  
+
+
+
+Ubuntu ? Parent 
+
+apache2 ? child
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Docker Volume  ? 
+
+
+   1) root Disk: OS files .
+
+
+   2) Data disk: (external volume)
+
+
+chnage docker installation root directory
+
+/dev/xvdf       8.0G   33M  8.0G   1% /usr/share/nginx/html
+root@7c30d1a94dc2:/# exit
+exit
+[root@docker ~]#
+[root@docker ~]#
+[root@docker ~]# docker rm -f  $(docker ps -q -a)
+d27800169b4f
+7c30d1a94dc2
+[root@docker ~]#
+[root@docker ~]#
+[root@docker ~]# docker volume  prune -a
+unknown shorthand flag: 'a' in -a
+See 'docker volume prune --help'.
+[root@docker ~]#
+[root@docker ~]# docker volume  prune
+WARNING! This will remove all local volumes not used by at least one container.
+Are you sure you want to continue? [y/N] y
+Deleted Volumes:
+b5be590ae0840323d5c191e7db3c54560254bb0d4783fc80fc4f887de26ca9a5
+0056d72e366911320db3c42759e250232de7397ec8309d768761550a1bf1402b
+
+Total reclaimed space: 120.9MB
+[root@docker ~]# clear
+[root@docker ~]#
+[root@docker ~]# docker  volume ls
+DRIVER    VOLUME NAME
+[root@docker ~]#
+[root@docker ~]# ls /var/lib/docker/
+buildkit  containers  image  network  overlay2  plugins  runtimes  swarm  tmp  trust  volumes
+[root@docker ~]#
+[root@docker ~]# docker volume create vol1
+vol1
+[root@docker ~]# docker volume create mysqlvol
+mysqlvol
+[root@docker ~]#
+[root@docker ~]# docker volume create  oraclevol
+oraclevol
+[root@docker ~]#
+[root@docker ~]# docker  volume ls
+DRIVER    VOLUME NAME
+local     mysqlvol
+local     oraclevol
+local     vol1
+[root@docker ~]# docker run  -d --name=test -v  vol1:/usr/share/nginx/html   nginx
+6e8b8ccdb6d72ea824ac903e28fcfcdc18d75d8792b6b529c779be3d53f25d94
+[root@docker ~]#
+[root@docker ~]# docker exec -it  test bash
+root@6e8b8ccdb6d7:/#
+root@6e8b8ccdb6d7:/# cd /usr/share/nginx/html/
+root@6e8b8ccdb6d7:/usr/share/nginx/html#
+root@6e8b8ccdb6d7:/usr/share/nginx/html# echo  hellworld >  index.html
+root@6e8b8ccdb6d7:/usr/share/nginx/html# exit
+exit
+[root@docker ~]# docker rm -f test
+test
+[root@docker ~]# docker volume ls
+DRIVER    VOLUME NAME
+local     mysqlvol
+local     oraclevol
+local     vol1
+[root@docker ~]# docker inspect vol1  vol1
+[
+    {
+        "CreatedAt": "2022-11-20T12:07:24Z",
+        "Driver": "local",
+        "Labels": {},
+        "Mountpoint": "/var/lib/docker/volumes/vol1/_data",
+        "Name": "vol1",
+        "Options": {},
+        "Scope": "local"
+    },
+    {
+        "CreatedAt": "2022-11-20T12:07:24Z",
+        "Driver": "local",
+        "Labels": {},
+        "Mountpoint": "/var/lib/docker/volumes/vol1/_data",
+        "Name": "vol1",
+        "Options": {},
+        "Scope": "local"
+    }
+]
+[root@docker ~]# docker inspect  volume vol1
+[root@docker ~]# docker inspect  volume vol1
+[
+    {
+        "CreatedAt": "2022-11-20T12:07:24Z",
+        "Driver": "local",
+        "Labels": {},
+        "Mountpoint": "/var/lib/docker/volumes/vol1/_data",
+        "Name": "vol1",
+        "Options": {},
+        "Scope": "local"
+    }
+]
+Error: No such object: volume
+[root@docker ~]# docker volume inspect vol1
+[root@docker ~]# docker volume inspect vol1
+[
+    {
+        "CreatedAt": "2022-11-20T12:07:24Z",
+        "Driver": "local",
+        "Labels": {},
+        "Mountpoint": "/var/lib/docker/volumes/vol1/_data",
+        "Name": "vol1",
+        "Options": {},
+        "Scope": "local"
+    }
+]
+[root@docker ~]# ls /var/lib/docker/volumes/vol1/_data/
+50x.html  index.html
+[root@docker ~]#
+[root@docker ~]# cat  /var/lib/docker/volumes/vol1/_data/index.html
+hellworld
+[root@docker ~]#
+[root@docker ~]# docker volume  ls
+DRIVER    VOLUME NAME
+local     mysqlvol
+local     oraclevol
+local     vol1
+[root@docker ~]# ls /
+bin   dev  home  lib64  mnt  proc  run   srv      sys  usr
+boot  etc  lib   media  opt  root  sbin  storage  tmp  var
+[root@docker ~]#
+[root@docker ~]# docker  rm -f $(docker ps -q -a)
+"docker rm" requires at least 1 argument.
+See 'docker rm --help'.
+
+Usage:  docker rm [OPTIONS] CONTAINER [CONTAINER...]
+
+Remove one or more containers
+[root@docker ~]#
+[root@docker ~]# docker volume  ls
+DRIVER    VOLUME NAME
+local     mysqlvol
+local     oraclevol
+local     vol1
+[root@docker ~]#
+[root@docker ~]# docker volume rm vol1
+vol1
+[root@docker ~]# docker volume prune
+WARNING! This will remove all local volumes not used by at least one container.
+Are you sure you want to continue? [y/N] y
+Deleted Volumes:
+mysqlvol
+oraclevol
+
+Total reclaimed space: 0B
+[root@docker ~]# docker volume  ls
+DRIVER    VOLUME NAME
+[root@docker ~]#
+[root@docker ~]# ls /var/lib/docker/volumes/
+backingFsBlockDev  metadata.db
+[root@docker ~]#
+[root@docker ~]#
+[root@docker ~]# docker system  df
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          4         0         669.7MB   669.7MB (100%)
+Containers      0         0         0B        0B
+Local Volumes   0         0         0B        0B
+Build Cache     0         0         0B        0B
+[root@docker ~]#
+[root@docker ~]# docker volume create vol1
+vol1
+[root@docker ~]# docker volume create vol2
+vol2
+[root@docker ~]#
+[root@docker ~]# docker system  df
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          4         0         669.7MB   669.7MB (100%)
+Containers      0         0         0B        0B
+Local Volumes   2         0         0B        0B
+Build Cache     0         0         0B        0B
+[root@docker ~]#
+[root@docker ~]#
+[root@docker ~]#
+[root@docker ~]# mkdir /opt/docker
+[root@docker ~]#
+[root@docker ~]# lsblk
+NAME    MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
+xvda    202:0    0  10G  0 disk
+└─xvda1 202:1    0  10G  0 part /
+xvdf    202:80   0   8G  0 disk /storage
+[root@docker ~]#
+[root@docker ~]# umount /dev/xvdf
+[root@docker ~]#
+[root@docker ~]# mount /dev/xvdf   /opt/docker/
+
+[root@docker ~]#
+[root@docker ~]# rm -rf  /opt/docker/*
+[root@docker ~]#
+[root@docker ~]# ls /opt/docker/
+[root@docker ~]#
+[root@docker ~]# df -h  /opt/docker/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/xvdf       8.0G   33M  8.0G   1% /opt/docker
+[root@docker ~]#
+[root@docker ~]#
+[root@docker ~]# docker info | grep -i root
+ Docker Root Dir: /var/lib/docker
+[root@docker ~]#
+[root@docker ~]#
+[root@docker ~]# systemctl status  docker
+● docker.service - Docker Application Container Engine
+   Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; vendor preset: disabled)
+   Active: active (running) since Sat 2022-11-19 09:41:27 UTC; 1 day 2h ago
+     Docs: https://docs.docker.com
+ Main PID: 7805 (dockerd)
+    Tasks: 9
+   Memory: 528.5M
+   CGroup: /system.slice/docker.service
+           └─7805 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+
+Nov 20 10:53:19 docker dockerd[7805]: time="2022-11-20T10:53:19.721715011Z" level=warning msg="fa...5c2"
+Nov 20 10:53:19 docker dockerd[7805]: time="2022-11-20T10:53:19.899892425Z" level=warning msg="fa...5a0"
+Nov 20 10:54:38 docker dockerd[7805]: time="2022-11-20T10:54:38.260060643Z" level=info msg="ignor...ete"
+Nov 20 11:32:10 docker dockerd[7805]: time="2022-11-20T11:32:10.318628014Z" level=info msg="ignor...ete"
+Nov 20 11:35:59 docker dockerd[7805]: time="2022-11-20T11:35:59.622212732Z" level=info msg="ignor...ete"
+Nov 20 11:40:03 docker dockerd[7805]: time="2022-11-20T11:40:03.816364727Z" level=info msg="ignor...ete"
+Nov 20 11:42:20 docker dockerd[7805]: time="2022-11-20T11:42:20.095975502Z" level=info msg="ignor...ete"
+Nov 20 12:02:54 docker dockerd[7805]: time="2022-11-20T12:02:54.065556567Z" level=info msg="ignor...ete"
+Nov 20 12:02:54 docker dockerd[7805]: time="2022-11-20T12:02:54.091435869Z" level=info msg="ignor...ete"
+Nov 20 12:08:47 docker dockerd[7805]: time="2022-11-20T12:08:47.264438037Z" level=info msg="ignor...ete"
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@docker ~]# vi /usr/lib/systemd/system/docker.service
+[root@docker ~]#
+[root@docker ~]#
+[root@docker ~]# systemctl daemon-reload
+[root@docker ~]#
+[root@docker ~]# systemctl  restart docker
+[root@docker ~]#
+[root@docker ~]# ls  /opt/docker/
+buildkit  containers  image  network  overlay2  plugins  runtimes  swarm  tmp  trust  volumes
+[root@docker ~]#
+[root@docker ~]# ls   /var/lib/docker/
+buildkit  containers  image  network  overlay2  plugins  runtimes  swarm  tmp  trust  volumes
+[root@docker ~]# docker images
+REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
+[root@docker ~]#
+[root@docker ~]# docker info | grep -i root
+ Docker Root Dir: /opt/docker
+[root@docker ~]#
+[root@docker ~]# rm -rf /var/lib/docker/
+
+[root@docker ~]#
+[root@docker ~]# docker volume create vol1
+vol1
+[root@docker ~]# docker volume create vol2
+vol2
+[root@docker ~]#
+[root@docker ~]# ls /opt/docker/volumes/
+backingFsBlockDev  metadata.db  vol1  vol2
+[root@docker ~]#
+[root@docker ~]# df -h /opt/docker/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/xvdf       8.0G   33M  8.0G   1% /opt/docker
+[root@docker ~]# history
+    1  vi  /etc/ssh/sshd_config
+    2  systemctl  restart sshd
+    3  passwd centos
+    4  clear
+    5  docker run -it --name=con1  ubuntu
+    6  docker system df
+    7  docker attach con1
+    8  docker run -it --name=con2  ubuntu
+    9  docker rm -f con2
+   10  docker attach con1
+   11  docker rm -f con1
+   12  docker run -it --name=con1  ubuntu
+   13  celar
+   14  clear
+   15   yum-config-manager     --add-repo     https://download.docker.com/linux/centos/docker-ce.repo
+   16  yum  install docker-ce -y
+   17  systemctl start docker
+   18  systemctl enable docker
+   19  docker pull mysql:5.6
+   20  docker run -d  --name=test  mysql:5.6
+   21  docker ps
+   22  docker ps -a
+   23  docker logs test
+   24  docker rm -f test
+   25  docker run -d  --name=test -e  MYSQL_ROOT_PASSWORD=redhat mysql:5.6
+   26  docker ps
+   27  docker exec -it test  bash
+   28  history
+   29  docker pull nginx
+   30  docker run -it   --name=web  nginx   bash
+   31  docker top web
+   32  docker stop web
+   33  docker rm -f web
+   34  docker rm -f  $(docker ps -q -a)
+   35  docker ps -a
+   36  docker images
+   37  docker rmi  $(docker image -q)
+   38  docker rmi  $(docker images -q)
+   39  clear
+   40  docker images
+   41  docker ps -a
+   42  ls  /var/lib/docker/overlay2/
+   43  docker pull ubuntu
+   44  docker images
+   45  ls  /var/lib/docker/overlay2/
+   46  ls  /var/lib/docker/overlay2/3423a67a227dc894e754dde2b76ffefede8ed71fa9a6b150a60353a3e239a91c/
+   47  ls  /var/lib/docker/overlay2/3423a67a227dc894e754dde2b76ffefede8ed71fa9a6b150a60353a3e239a91c/diff/
+   48  ls  /var/lib/docker/overlay2/
+   49  los  /var/lib/docker/overlay2/aa34122f15a58f1e98d805fb1670b54e698668d4f2a71b4c68f442205dd14be8/diff/
+   50  ls  /var/lib/docker/overlay2/aa34122f15a58f1e98d805fb1670b54e698668d4f2a71b4c68f442205dd14be8/diff/
+   51  ls  /var/lib/docker/overlay2/
+   52  ls  /var/lib/docker/overlay2/3423a67a227dc894e754dde2b76ffefede8ed71fa9a6b150a60353a3e239a91c/diff/
+   53  touch  /var/lib/docker/overlay2/3423a67a227dc894e754dde2b76ffefede8ed71fa9a6b150a60353a3e239a91c/diff/abc
+   54  ls  /var/lib/docker/overlay2/3423a67a227dc894e754dde2b76ffefede8ed71fa9a6b150a60353a3e239a91c/diff/
+   55  docker rm -f  $(docker ps -q -a)
+   56  clear
+   57  ls  /var/lib/docker/overlay2/
+   58  ls  /var/lib/docker/overlay2/3423a67a227dc894e754dde2b76ffefede8ed71fa9a6b150a60353a3e239a91c/diff/
+   59  cd
+   60  docker images
+   61  docker  image inspect ubuntu
+   62  ls /var/lib/docker/overlay2/3423a67a227dc894e754dde2b76ffefede8ed71fa9a6b150a60353a3e239a91c/diff/
+   63  rm  /var/lib/docker/overlay2/3423a67a227dc894e754dde2b76ffefede8ed71fa9a6b150a60353a3e239a91c/diff/abc
+   64  rm  -f   /var/lib/docker/overlay2/3423a67a227dc894e754dde2b76ffefede8ed71fa9a6b150a60353a3e239a91c/diff/abc
+   65  docker images
+   66  ls /dev/
+   67  ls  /var/lib/docker/overlay2/
+   68  docker run  -it --name=con1 ubuntu
+   69  docker rm -f $(docker ps  -q -a)
+   70  docker ps
+   71  df -TH
+   72  docker run  -it --name=con1 ubuntu
+   73  df -TH
+   74  docker run  -it --name=con2 ubuntu
+   75  df -TH
+   76  ls -ld  /var/lib/docker/overlay2/
+   77  df -TH   /
+   78  docker stop con1
+   79  docker stop con2
+   80  df -TH
+   81  docker start con1
+   82  docker start con2
+   83  docker info | grep -i root
+   84  docker stats con1
+   85  history
+   86  clear
+   87  docker run -it --name=con1  ubuntu
+   88  docker start con1
+   89  docker attach con1
+   90  docker  container inspect con1  | grep  -i diff
+   91  ls /var/lib/docker/overlay2/e3654c2cc4b90e798c94af56bbc6a6255d06552f193113964389703f6df57012/diff/
+   92  rm -f /var/lib/docker/overlay2/e3654c2cc4b90e798c94af56bbc6a6255d06552f193113964389703f6df57012/diff/abc
+   93  docker start con1
+   94  docker attach con1
+   95  rm -f /var/lib/docker/overlay2/e3654c2cc4b90e798c94af56bbc6a6255d06552f193113964389703f6df57012/diff/abc1
+   96  docker attach con1\
+   97  docker attach con1
+   98  docker run -it --name=con1  ubuntu
+   99  docker container inspect  con1  |  grep -i diff
+  100  ls /var/lib/docker/overlay2/682ca3842551e3de7422f8251d53f4fc03a4fa292393e04440deae9abfe66560/diff/
+  101  ls /var/lib/docker/overlay2/3423a67a227dc894e754dde2b76ffefede8ed71fa9a6b150a60353a3e239a91c/diff/
+  102  docker rm -f con1
+  103  docker rm -f con2
+  104  clear
+  105  docker run -it --name=con1  ubuntu
+  106  docker run -it --name=con2  ubuntu
+  107  docker  image  inspect   ubuntu
+  108  cd /var/lib/docker/overlay2/3423a67a227dc894e754dde2b76ffefede8ed71fa9a6b150a60353a3e239a91c/diff
+  109  cat etc/fstab
+  110  cd
+  111  docker  container  inspect  con1 | grep -i diff
+  112  cd  /var/lib/docker/overlay2/c03dab0757902eb0370cd07568bf891f1467415486cf21f0a258f2fd1e5db01c/diff/
+  113  ls
+  114  cd etc/
+  115  ls
+  116  cat fstab
+  117  cd
+  118  yum install epel-release -y
+  119  yum install ansible -y
+  120  ifconfig eth0
+  121  vi /etc/hosts
+  122  cd
+  123  vi /etc/ansible/hosts
+  124  ssh-keygen
+  125  ssh-copy-id -i centos@system1
+  126  ssh-copy-id -i centos@system2
+  127  clear
+  128  ansible all -m ping
+  129  ansible all -m ping -u centos
+  130  vi /etc/ansible/ans
+  131  vi /etc/ansible/ansible.cfg
+  132  cd
+  133  ansible all -m ping
+  134  ansible  system1  -m setup
+  135  ansible  system1  -m setup  -a 'filter=*kernel*'
+  136  ansible  all  -m setup  -a 'filter=ansible_kernel'
+  137  ansible  all  -m setup  -a 'filter=ansible_kernel'  > report
+  138  history
+  139  mkdir facts
+  140  cd facts/
+  141  yum install vim-enhanced -y
+  142  vim p1.yml
+  143  ansible-playbook p1.yml
+  144  cat p1.yml
+  145  vim p1.yml
+  146  ansible-playbook p1.yml
+  147  ansible all -a   'cat /etc/motd'
+  148  ls
+  149  cp p1.yml p2.yml
+  150  vim p2.yml
+  151  ansible  system1  -m setup
+  152  vim p2.yml
+  153  ansible  system1  -m setup -a 'filter=*hostname*'
+  154  vim p2.yml
+  155  ansible-playbook p2.yml
+  156  vim p2.yml
+  157  ansible-playbook p2.yml
+  158  vim p2.yml
+  159  ansible-doc  lineinfile
+  160  vim p2.yml
+  161  ansible-doc  lineinfile
+  162  ansible-playbook p2.yml
+  163  ansible-doc  lineinfile
+  164  vim p2.yml
+  165  ansible-playbook p2.yml
+  166  ansible system1  -a  'cat /etc/hosts'
+  167  ansible system1  -a  'cat /etc/myhosts'
+  168  cp p2.yml p3.yml
+  169  vim p3.yml
+  170  cd
+  171  ansible  all -m setup
+  172  vim p3.yml
+  173  cd  facts/
+  174  ls
+  175  vim p1.yml
+  176  ls
+  177  vim p2.yml
+  178  vim /etc/ansible/ansible.cfg
+  179  l
+  180  ls
+  181  cp p3.yml  p4.yml
+  182  vim p4.yml
+  183  ansible-playbook p4.yml
+  184  vim p4.yml
+  185  ansible-playbook p4.yml
+  186  vim p4.yml
+  187  ansible-playbook p4.yml
+  188  vim p4.yml
+  189  ansible-playbook p4.yml
+  190  vim p4.yml
+  191  ansible-playbook p4.yml
+  192  vim p4.yml
+  193  ansible-playbook  p4.yml
+  194  cd
+  195  ansible-vault
+  196  mkdir vault
+  197  cd vault/
+  198  echo hi > secure
+  199  ls
+  200  cat secure
+  201  ansible-vault  encrypt  secure
+  202  ls
+  203  cat secure
+  204  ansible-vault  view  secure
+  205  ansible-vault edit secure
+  206  ansible-vault  view  secure
+  207  ansible-vault rekey  secure
+  208  ansible-vault  decrypt  secure
+  209  ls
+  210  cat secure
+  211  rm -f secure
+  212  ls
+  213  ansible-vault create  test
+  214  ls
+  215  rm -rf  test
+  216  vim p1.yml
+  217  cat p1.yml
+  218  ansible-vault encrypt  p1.yml
+  219  cat p1.yml
+  220  ansible-playbook p1.yml
+  221  ansible-playbook p1.yml  --ask-vault-pass
+  222  ansible-vault decrypt  p1.yml
+  223  vim p1.yml
+  224  vim  /root/vault/crypt.yml
+  225  ansible-vault encrypt crypt.yml
+  226  cat p1.yml
+  227  cat /root/vault/crypt.yml
+  228  ansible-playbook p1.yml
+  229  ansible-playbook p1.yml --ask-vault-pass
+  230  echo redhat  >  password-file
+  231  ls
+  232  ansible-playbook p1.yml  --vault-password-file=password-file
+  233  rm -f password-file
+  234  echo redhat  >  password-file
+  235  vi /etc/ansible/ansible.cfg
+  236  ansible-playbook p1.yml \
+  237  ansible-playbook p1.yml
+  238  pwd
+  239  vi /etc/ansible/ansible.cfg
+  240  ansible-playbook p1.yml
+  241  cd
+  242  vim /etc/ansible/hosts
+  243  cd  /etc/ansible/
+  244  ansible-vault encrypt  hosts
+  245  ls
+  246  cd
+  247  cd vault/
+  248  ls
+  249  cat password-file
+  250  cd
+  251  clear
+  252  docker images
+  253  docker  run  -it --name=con1  ubuntu
+  254  docker rm con1
+  255  docker rm con1  -f
+  256  docker  run  -it --name=demo  ubuntu
+  257  docker  images
+  258  docker commit demo  apache2
+  259  docker  images
+  260  docker rm  demo
+  261  docker rm -f $(docker ps -q -a)
+  262  docker  images
+  263  docker rmi a8780b506fa4
+  264  docker run -it  --name=con1  apache2
+  265  docker rm con1
+  266  docker  images
+  267  docker system df
+  268  docker  history cd1639215ce2
+  269  docker  images
+  270  docker run -it  --name=con1  apache2
+  271  docker rm con1
+  272  docker  save apache2  > apache.tar
+  273  ls
+  274  docker rmi apache2
+  275  docker rmi ubuntu
+  276  docker  images
+  277  ls
+  278  docker load  -i apache.tar
+  279  docker  images
+  280  docker pull ubuntu
+  281  history
+  282  docker  images
+  283  docker  history cd1639215ce2
+  284  docker rmi apache2
+  285  docker  images
+  286  docker pull nginx:1.17
+  287  docker pull nginx:1.18
+  288  docker  images
+  289  history
+  290  docker  pull ubuntu
+  291  docker  run -it --name=con1  ubuntu
+  292  docker commit  demo  apache2
+  293  docker commit con1  apache2
+  294  docker rm con1
+  295  ls  /var/lib/docker/overlay2/
+  296  docker ps -a
+  297  docker image  prune -a
+  298  docker  pull ubuntu
+  299  docker  run -it --name=con1  ubuntu
+  300  docker commit  con1  apache2
+  301  docker rm con1
+  302  cd  /var/lib/docker/overlay2/
+  303  ls
+  304  ls 00555eae440a893fcab4641ec7527789fd7d07854dfc9ccc6ddc17b403fd9468/diff/
+  305  ls 814beaa576adf3fa941d440216f2f7f55f74bd28ef5ce7beb516243b725292b8/diff/
+  306  ls
+  307  cd l/
+  308  ll
+  309  cd ..
+  310  cd  814beaa576adf3fa941d440216f2f7f55f74bd28ef5ce7beb516243b725292b8/
+  311  ls
+  312  cat lower
+  313  pwd
+  314  ls
+  315  cat lower
+  316  cd ..
+  317  ls
+  318  cd  00555eae440a893fcab4641ec7527789fd7d07854dfc9ccc6ddc17b403fd9468/
+  319  ls
+  320  cd
+  321  clear
+  322  docker  images
+  323  lsblk
+  324  mkfs -t  xfs  /dev/xvdf
+  325  mkdir /storage
+  326  mount  /dev/xvdf   /storage
+  327  df -h  /storage/
+  328  docker pull mysql:5.6
+  329  docker run -d --name=mysql -v  /storage:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=redhat   mysql:5.6
+  330  docker exec -it mysql  bash
+  331  docker rm -f  mysql
+  332  docker run -d --name=newcon  -v  /storage:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=redhat   mysql:5.6
+  333  docker exec -it newcon  bash
+  334  ls /storage/
+  335  history
+  336  docker rm -f newcon
+  337  rm -rf  /storage/*
+  338  mkdir /storage/logs
+  339  mkdir /storage/data
+  340  docker pull nginx
+  341  docker run -d  --name=web -v /storage/logs:/logs -v /storage/data:/usr/share/nginx/html    nginx
+  342  mkdir   /storage/common
+  343  vim /storage/common/index.html
+  344  docker rm -f  $(docker ps -q -a)
+  345  docker run -d  --name=web1 -v  /storage/common:/usr/share/nginx/html   nginx
+  346  docker run -d  --name=web2 -v  /storage/common:/usr/share/nginx/html   nginx
+  347  docker exec -it web1 bash
+  348  docker exec -it web2 bash
+  349  docker rm -f  web2
+  350  docker run -d  --name=web2 -v  /storage/common:/usr/share/nginx/html:ro   nginx
+  351  docker exec -it web1  bash
+  352  docker exec -it web2  bash
+  353  df -h  /storage/
+  354  lsblk
+  355  df -h  /storage/
+  356  xfs_growfs  /storage/
+  357  df -h  /storage/
+  358  docker exec -it web1  bash
+  359  docker rm -f  $(docker ps -q -a)
+  360  docker volume  prune -a
+  361  docker volume  prune
+  362  clear
+  363  docker  volume ls
+  364  ls /var/lib/docker/
+  365  docker volume create vol1
+  366  docker volume create mysqlvol
+  367  docker volume create  oraclevol
+  368  docker  volume ls
+  369  docker run  -d --name=test -v  vol1:/usr/share/nginx/html   nginx
+  370  docker exec -it  test bash
+  371  docker rm -f test
+  372  docker volume ls
+  373  docker inspect vol1  vol1
+  374  docker inspect  volume vol1
+  375  docker volume inspect vol1
+  376  ls /var/lib/docker/volumes/vol1/_data/
+  377  cat  /var/lib/docker/volumes/vol1/_data/index.html
+  378  docker volume  ls
+  379  ls /
+  380  docker  rm -f $(docker ps -q -a)
+  381  docker volume  ls
+  382  docker volume rm vol1
+  383  docker volume prune
+  384  docker volume  ls
+  385  ls /var/lib/docker/volumes/
+  386  docker system  df
+  387  docker volume create vol1
+  388  docker volume create vol2
+  389  docker system  df
+  390  mkdir /opt/docker
+  391  lsblk
+  392  umount /dev/xvdf
+  393  mount /dev/xvdf   /opt/docker/
+  394  rm -rf  /opt/docker/*
+  395  ls /opt/docker/
+  396  df -h  /opt/docker/
+  397  docker info | grep -i root
+  398  systemctl status  docker
+  399  vi /usr/lib/systemd/system/docker.service
+  400  systemctl daemon-reload
+  401  systemctl  restart docker
+  402  ls  /opt/docker/
+  403  ls   /var/lib/docker/
+  404  docker images
+  405  docker info | grep -i root
+  406  rm -rf /var/lib/docker/
+  407  docker volume create vol1
+  408  docker volume create vol2
+  409  ls /opt/docker/volumes/
+  410  df -h /opt/docker/
+  411  history
+[root@docker ~]#
+
+
+
+
+
+
+
+
+
+
